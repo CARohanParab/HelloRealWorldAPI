@@ -7,9 +7,7 @@ COPY *.csproj ./
 RUN dotnet restore
 
 # Copy everything else and build
-COPY . .
-
-# Publish the application
+COPY . ./
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
@@ -17,6 +15,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
+# Set environment variables
+ENV ASPNETCORE_URLS=http://+:80
+ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Expose the port on which the app will run
 EXPOSE 80
